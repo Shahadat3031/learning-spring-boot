@@ -5,11 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
 @Repository("FakeDao")
-public class FakePersonDataAccessService implements PersonDao{
+public class FakePersonDataAccessService implements PersonDao {
 
     private static List<Person> DB = new ArrayList<>();
 
@@ -22,6 +23,30 @@ public class FakePersonDataAccessService implements PersonDao{
     @Override
     public List<Person> selectAllPerson() {
         return DB;
+    }
+
+    @Override
+    public Optional<Person> selectPersonById(UUID id) {
+        return DB.stream().filter(
+                person -> person.getId().equals(id)).findFirst();
+    }
+
+    @Override
+    public int deletePersonByID(UUID id) {
+        Optional<Person> personMaybe = selectPersonById(id);
+        if (personMaybe.isEmpty()) {
+            return 0;
+        } else {
+            DB.remove(personMaybe.get());
+            return 1;
+        }
+    }
+
+    @Override
+    public int updatePersonById(UUID id, Person person) {
+
+
+        return 0;
     }
 
 }
